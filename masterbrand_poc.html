@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasterBrand Finance Intelligence — Conquer AI POC</title>
+<link rel="icon" href="https://s201.q4cdn.com/943623151/files/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand: #1A3D6B;
+  --brand-dark: #122B4F;
+  --brand-light: #2456A4;
+  --brand-pale: #EEF3FA;
+  --brand-mid: #C8D8EE;
+  --black: #141414;
+  --grey900: #252525;
+  --grey700: #4A4A4A;
+  --grey500: #7A7A7A;
+  --grey300: #C8C8C8;
+  --grey100: #F5F5F5;
+  --white: #FFFFFF;
+  --green: #1A6B45;
+  --green-bg: #E6F4ED;
+  --amber: #A05C00;
+  --amber-bg: #FEF3E2;
+  --red: #B80000;
+  --red-bg: #FDEEEE;
+  --ai-blue: #0053A0;
+  --ai-bg: #EBF3FF;
+  --conquer: #515FFC;
+  --nav-h: 56px;
+  --sidebar-w: 68px;
+  --page-bg: #F2F4F7;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--page-bg);
+  color: var(--black);
+  overflow-x: hidden;
+}
+
+/* ── NAV ────────────────────────────────────── */
+#nav {
+  position: fixed; top:0; left:0; right:0;
+  height: var(--nav-h);
+  background: var(--brand);
+  display: flex; align-items: center;
+  padding: 0 20px 0 16px;
+  z-index: 1000;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+}
+#nav .logo-wrap {
+  display: flex; align-items: center; gap: 12px;
+}
+#nav .logo-wrap img {
+  height: 28px; filter: brightness(0) invert(1);
+}
+#nav .logo-fallback {
+  font-family: 'Playfair Display', serif;
+  color: white; font-size: 18px; font-weight: 700;
+  letter-spacing: 0.02em;
+}
+#nav .divider { width:1px; height:22px; background:rgba(255,255,255,0.25); margin:0 16px; }
+#nav .screen-title {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8);
+  flex: 1;
+}
+#nav .nav-right {
+  display: flex; align-items: center; gap: 14px;
+}
+#nav .nav-user { font-size: 12px; color: rgba(255,255,255,0.85); }
+#nav .nav-time { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.55); }
+#nav .nav-badge {
+  background: rgba(255,255,255,0.15); color: white;
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* ── ALERT BANNER ────────────────────────────── */
+#alert-banner {
+  position: fixed; top: var(--nav-h); left: var(--sidebar-w); right: 0;
+  height: 48px; background: var(--red); z-index: 999;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px;
+  transform: translateY(-100%); opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease, background 0.5s ease;
+}
+#alert-banner.show { transform: translateY(0); opacity: 1; }
+#alert-banner.recovering { background: var(--amber); }
+#alert-banner.resolved { background: var(--green); }
+
+.pulse-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: white; flex-shrink: 0;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.4; transform:scale(1.35); }
+}
+#alert-banner.recovering .pulse-dot { animation-duration: 3s; }
+
+#alert-banner .alert-badge {
+  background: rgba(255,255,255,0.2); color: white;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; padding: 2px 8px; border-radius: 3px;
+}
+#alert-banner .alert-text { font-size: 13px; color: white; flex:1; }
+#alert-banner .alert-timer {
+  font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700;
+  color: white; min-width: 52px; text-align: right;
+}
+#alert-banner .alert-btn {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35);
+  color: white; font-size: 12px; font-weight: 600; padding: 5px 12px;
+  border-radius: 6px; cursor: pointer; transition: background 0.2s;
+}
+#alert-banner .alert-btn:hover { background: rgba(255,255,255,0.28); }
+
+/* ── SIDEBAR ─────────────────────────────────── */
+#sidebar {
+  position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--white);
+  border-right: 1px solid #E4E8EF;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 12px 0 16px;
+  z-index: 990;
+}
+.nav-icon {
+  position: relative; width: 48px; height: 48px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 3px; border-radius: 10px;
+  cursor: pointer; margin-bottom: 4px;
+  transition: all 0.18s ease;
+}
+.nav-icon svg { width: 20px; height: 20px; }
+.nav-icon .icon-label {
+  font-size: 9px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--grey500);
+}
+.nav-icon:hover { background: var(--brand-pale); }
+.nav-icon:hover svg { stroke: var(--brand); }
+.nav-icon:hover .icon-label { color: var(--brand); }
+.nav-icon.active { background: var(--brand-pale); }
+.nav-icon.active svg { stroke: var(--brand); }
+.nav-icon.active .icon-label { color: var(--brand); font-weight: 700; }
+.nav-icon svg { stroke: var(--grey500); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-alert-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); border: 2px solid white;
+  transition: opacity 0.4s ease;
+}
+#sidebar .powered {
+  margin-top: auto; font-size: 8px; font-weight: 700;
+  color: var(--conquer); text-align: center; line-height: 1.4;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+
+/* ── PROGRESS BAR ───────────────────────────── */
+#progress-bar {
+  position: fixed; top: var(--nav-h); left: var(--sidebar-w); right: 0;
+  height: 3px; background: var(--brand-light);
+  z-index: 1100; width: 0%; opacity: 0;
+  transition: width linear, opacity 0.2s;
+}
+
+/* ── MAIN CONTENT ───────────────────────────── */
+#main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+  transition: margin-top 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+#main.with-banner { margin-top: calc(var(--nav-h) + 48px); }
+
+.screen { display: none; padding: 28px 32px 60px; animation: fadeIn 0.3s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+/* ── TYPOGRAPHY ─────────────────────────────── */
+.page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); }
+.page-sub { font-size: 12px; color: var(--grey500); margin-top: 4px; }
+.section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--grey500); margin-bottom: 12px;
+}
+.section-label span {
+  background: var(--brand); color: white;
+  font-size: 9px; padding: 1px 6px; border-radius: 3px; margin-left: 6px;
+}
+
+/* ── KPI CARDS ──────────────────────────────── */
+.kpi-row { display: grid; gap: 16px; margin-bottom: 24px; }
+.kpi-row.cols-4 { grid-template-columns: repeat(4,1fr); }
+.kpi-row.cols-3 { grid-template-columns: repeat(3,1fr); }
+
+.kpi-card {
+  background: var(--white); border-radius: 10px;
+  border: 1px solid #E8ECF2;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  padding: 16px 20px;
+  border-top: 3px solid var(--grey300);
+  transition: box-shadow 0.22s ease, transform 0.22s ease;
+  cursor: default;
+}
+.kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.kpi-card.green { border-top-color: var(--green); }
+.kpi-card.amber { border-top-color: var(--amber); }
+.kpi-card.red { border-top-color: var(--red); }
+.kpi-card.brand { border-top-color: var(--brand); }
+.kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--grey500); margin-bottom: 8px; }
+.kpi-value { font-family: 'DM Mono', monospace; font-size: 30px; font-weight: 500; color: var(--black); }
+.kpi-delta { font-size: 12px; color: var(--grey500); margin-top: 4px; }
+.kpi-delta.up-bad { color: var(--red); }
+.kpi-delta.down-good { color: var(--green); }
+.kpi-delta.amber { color: var(--amber); }
+
+/* ── PANELS ─────────────────────────────────── */
+.panel-row { display: grid; gap: 20px; margin-bottom: 20px; }
+.panel-row.split-6-4 { grid-template-columns: 60fr 40fr; }
+.panel-row.split-4-6 { grid-template-columns: 40fr 60fr; }
+.panel-row.split-5-5 { grid-template-columns: 1fr 1fr; }
+
+.panel {
+  background: var(--white); border-radius: 10px;
+  border: 1px solid #E8ECF2;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  padding: 20px;
+}
+
+/* ── TABLE ──────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  background: var(--grey900); color: white;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 9px 12px; text-align: left;
+}
+thead th:first-child { border-radius: 6px 0 0 0; }
+thead th:last-child { border-radius: 0 6px 0 0; }
+tbody tr { border-bottom: 1px solid #F0F2F5; transition: background 0.15s; }
+tbody tr:hover { background: #FAFBFC; }
+tbody tr:last-child { border-bottom: none; }
+tbody td { padding: 10px 12px; font-size: 13px; color: var(--grey700); }
+tbody td .mono { font-family: 'DM Mono', monospace; }
+tbody tr.highlight { background: #FFF7F7; }
+tbody tr.highlight:hover { background: #FFF0F0; }
+@keyframes rowPulse {
+  0%,100% { background: #FFF7F7; }
+  50% { background: #FFE8E8; }
+}
+tbody tr.pulsing { animation: rowPulse 2s ease-in-out infinite; }
+
+/* ── BADGES ─────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 3px 8px; border-radius: 4px;
+}
+.badge.green { background: var(--green-bg); color: var(--green); }
+.badge.amber { background: var(--amber-bg); color: var(--amber); }
+.badge.red { background: var(--red-bg); color: var(--red); }
+.badge.blue { background: var(--ai-bg); color: var(--ai-blue); }
+.badge.brand { background: var(--brand-pale); color: var(--brand); }
+.badge.grey { background: #F0F2F5; color: var(--grey700); }
+
+/* ── AI CALLOUT ─────────────────────────────── */
+.ai-callout {
+  border-left: 4px solid var(--ai-blue);
+  background: var(--ai-bg);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+  margin-top: 16px;
+}
+.ai-callout .ai-label {
+  font-size: 10px; font-weight: 700; color: var(--ai-blue);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+}
+.ai-callout .ai-label::before {
+  content: '●'; font-size: 8px; color: var(--ai-blue);
+}
+.ai-callout p { font-size: 13px; color: var(--grey700); line-height: 1.6; }
+.ai-callout .ai-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 8px 18px; border-radius: 8px; border: none;
+  cursor: pointer; transition: all 0.22s ease; position: relative;
+  min-width: 100px; justify-content: center;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn .btn-label { transition: opacity 0.15s; }
+.btn .spinner {
+  position: absolute; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  opacity: 0; transition: opacity 0.15s;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn.loading .btn-label { opacity: 0; }
+.btn.loading .spinner { opacity: 1; }
+
+.btn-primary { background: var(--brand); color: white; }
+.btn-primary .spinner { border-color: rgba(255,255,255,0.3); border-top-color: white; }
+.btn-primary:hover:not(:disabled) { background: var(--brand-dark); box-shadow: 0 4px 12px rgba(26,61,107,0.35); }
+.btn-primary.success { background: var(--green) !important; }
+
+.btn-ghost {
+  background: transparent; color: var(--grey700);
+  border: 1px solid var(--grey300);
+}
+.btn-ghost .spinner { border-color: rgba(0,0,0,0.2); border-top-color: var(--brand); }
+.btn-ghost:hover:not(:disabled) { background: var(--grey100); border-color: var(--grey700); color: var(--black); }
+
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover:not(:disabled) { background: #145235; box-shadow: 0 4px 12px rgba(26,107,69,0.3); }
+.btn-green.success { background: #145235 !important; }
+
+.btn-danger { background: transparent; color: var(--red); border: 1px solid #FECACA; }
+.btn-danger:hover:not(:disabled) { background: var(--red-bg); border-color: var(--red); }
+
+.btn-lg { font-size: 15px; padding: 12px 28px; border-radius: 10px; }
+
+/* ── TOAST ──────────────────────────────────── */
+#toast-container {
+  position: fixed; bottom: 24px; right: 24px;
+  z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+  width: 300px; padding: 12px 18px; border-radius: 8px;
+  display: flex; align-items: flex-start; gap: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  transform: translateX(120%); opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s;
+  font-size: 13px; color: white;
+}
+.toast.show { transform: translateX(0); opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.warning { background: var(--amber); }
+.toast.info { background: var(--black); }
+.toast.error { background: var(--red); }
+.toast-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.toast-body { flex: 1; line-height: 1.4; }
+.toast-close { cursor: pointer; opacity: 0.7; margin-left: 4px; }
+
+/* ── MODAL ──────────────────────────────────── */
+#modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55); z-index: 9990;
+  display: none; align-items: center; justify-content: center;
+}
+#modal-overlay.show { display: flex; }
+.modal-box {
+  background: white; border-radius: 12px;
+  padding: 28px 32px; max-width: 460px; width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from { transform: scale(0.94); opacity:0; } to { transform: scale(1); opacity:1; } }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+.modal-body { font-size: 14px; color: var(--grey700); line-height: 1.6; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ── SHIMMER ─────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(90deg, #E8E8E8 25%, #F4F4F4 50%, #E8E8E8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 4px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── FOOTER ─────────────────────────────────── */
+#footer {
+  position: fixed; bottom: 0; left: var(--sidebar-w); right: 0;
+  height: 32px; background: #EAEDF2;
+  border-top: 1px solid #DDE1EA;
+  display: flex; align-items: center; padding: 0 20px;
+  z-index: 800; gap: 16px;
+}
+#footer .footer-link { font-size: 11px; color: var(--ai-blue); cursor: pointer; text-decoration: none; }
+#footer .footer-link:hover { text-decoration: underline; }
+#footer .footer-sources { flex:1; text-align: center; font-size: 11px; color: var(--grey500); }
+#footer .footer-powered { font-size: 10px; font-weight: 700; color: var(--conquer); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ── KEYBOARD HINT ──────────────────────────── */
+#keyboard-hint {
+  position: fixed; bottom: 40px; left: 88px;
+  font-size: 11px; color: rgba(0,0,0,0.3);
+  display: flex; align-items: center; gap: 6px;
+  pointer-events: none;
+}
+.key { background: rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.12); border-radius: 4px; padding: 2px 6px; font-family: 'DM Mono', monospace; font-size: 10px; }
+
+/* ── SCREEN-SPECIFIC ─────────────────────────── */
+
+/* S0 — Problem Statement */
+.s0-hero { text-align: center; max-width: 700px; margin: 0 auto 40px; padding-top: 20px; }
+.s0-hero .overline { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand); margin-bottom: 12px; }
+.s0-hero h1 { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+.s0-hero p { font-size: 15px; color: var(--grey700); line-height: 1.75; }
+
+.s0-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; max-width: 900px; margin: 0 auto 32px; }
+.s0-card {
+  background: var(--white); border-radius: 10px;
+  border: 1px solid #E4E8EF;
+  border-top: 4px solid var(--brand);
+  padding: 24px 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: default;
+}
+.s0-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(26,61,107,0.12); }
+.s0-card .card-icon { font-size: 28px; margin-bottom: 14px; }
+.s0-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.s0-card p { font-size: 13px; color: var(--grey700); line-height: 1.65; margin-bottom: 14px; }
+.s0-card .card-stat { font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500; color: var(--brand); }
+.s0-card .card-stat-label { font-size: 11px; color: var(--grey500); margin-top: 2px; }
+
+.s0-case {
+  max-width: 900px; margin: 0 auto 32px;
+  background: var(--brand-pale);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+}
+.s0-case .case-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand); margin-bottom: 8px; }
+.s0-case p { font-size: 14px; color: var(--grey700); line-height: 1.7; }
+
+.s0-cta { text-align: center; }
+.s0-cta .cta-sub { font-size: 12px; color: var(--grey500); margin-top: 10px; }
+
+/* S1 — Finance Dashboard */
+.source-row {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.source-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 8px;
+  background: var(--grey100); font-size: 13px;
+}
+.source-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.source-dot.green { background: var(--green); animation: slowPulse 3s ease-in-out infinite; }
+.source-dot.amber { background: var(--amber); animation: slowPulse 1.5s ease-in-out infinite; }
+.source-dot.red { background: var(--red); animation: slowPulse 1s ease-in-out infinite; }
+@keyframes slowPulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.source-name { font-weight: 600; color: var(--black); }
+.source-time { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--grey500); margin-left: auto; }
+
+/* S2 — AR Dashboard */
+.query-box {
+  display: flex; gap: 10px; margin-bottom: 20px;
+  background: var(--white); border-radius: 10px;
+  border: 1px solid #E4E8EF; padding: 14px 16px;
+}
+.query-box input {
+  flex: 1; border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  color: var(--black); background: transparent;
+}
+.query-box input::placeholder { color: var(--grey300); }
+.query-box .query-icon { color: var(--grey500); font-size: 16px; }
+
+.query-suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.query-chip {
+  background: var(--brand-pale); color: var(--brand);
+  font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px;
+  cursor: pointer; border: 1px solid var(--brand-mid);
+  transition: all 0.18s;
+}
+.query-chip:hover { background: var(--brand); color: white; }
+
+.query-result {
+  background: var(--ai-bg); border: 1px solid var(--brand-mid);
+  border-radius: 8px; padding: 16px;
+  display: none;
+}
+.query-result.show { display: block; animation: fadeIn 0.3s ease; }
+.query-result h4 { font-size: 13px; font-weight: 700; color: var(--ai-blue); margin-bottom: 10px; }
+.query-result table { background: white; border-radius: 6px; overflow: hidden; }
+
+/* Chart bars */
+.chart-wrap { padding: 10px 0; }
+.bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 160px; }
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.bars { display: flex; align-items: flex-end; gap: 3px; height: 140px; }
+.bar { border-radius: 4px 4px 0 0; transition: all 0.5s ease; cursor: pointer; position: relative; }
+.bar:hover::after {
+  content: attr(data-tip);
+  position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
+  background: var(--black); color: white; font-size: 11px; white-space: nowrap;
+  padding: 4px 8px; border-radius: 4px; pointer-events: none;
+}
+.bar.brand { background: var(--brand); }
+.bar.green { background: var(--green); }
+.bar.amber { background: var(--amber); }
+.bar-label { font-size: 11px; color: var(--grey500); }
+
+/* Aging grid */
+.aging-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 0; }
+.aging-hdr {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--grey500);
+  padding: 8px 10px; border-bottom: 2px solid #EEF0F4;
+}
+.aging-row {
+  display: contents;
+}
+.aging-cell {
+  padding: 10px; font-size: 13px; color: var(--grey700);
+  border-bottom: 1px solid #F0F2F5;
+  transition: background 0.15s;
+}
+.aging-row:hover .aging-cell { background: #FAFBFC; }
+.aging-cell .mono { font-family: 'DM Mono', monospace; }
+.aging-cell.critical { color: var(--red); font-weight: 600; }
+
+/* S3 — AP Hub */
+.invoice-pipeline {
+  display: flex; align-items: center; gap: 0;
+  background: var(--white); border-radius: 10px;
+  border: 1px solid #E4E8EF; padding: 20px;
+  margin-bottom: 20px; overflow-x: auto;
+}
+.pipeline-step {
+  flex: 1; min-width: 120px; text-align: center;
+  padding: 14px 10px;
+  position: relative;
+}
+.pipeline-step::after {
+  content: '→'; position: absolute; right: -8px; top: 50%; transform: translateY(-50%);
+  font-size: 18px; color: var(--grey300);
+}
+.pipeline-step:last-child::after { display: none; }
+.pipeline-step .step-icon { font-size: 24px; margin-bottom: 8px; }
+.pipeline-step .step-label { font-size: 12px; font-weight: 600; color: var(--black); }
+.pipeline-step .step-count {
+  font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500;
+  margin-top: 6px;
+}
+.pipeline-step .step-count.green { color: var(--green); }
+.pipeline-step .step-count.amber { color: var(--amber); }
+.pipeline-step .step-count.red { color: var(--red); }
+.pipeline-step .step-count.brand { color: var(--brand); }
+
+/* S3 Invoice rows */
+.invoice-row-expand { display: none; }
+.invoice-row-expand.open { display: table-row; }
+.expand-cell { padding: 0 !important; }
+.expand-content {
+  padding: 16px 20px;
+  background: #FAFBFF;
+  border-left: 3px solid var(--brand);
+}
+.extract-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 14px; }
+.extract-field { }
+.extract-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--grey500); margin-bottom: 4px; }
+.extract-value { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--black); font-weight: 500; }
+.route-chips { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
+.route-chip {
+  font-size: 11px; padding: 4px 12px; border-radius: 4px; font-weight: 600;
+}
+.route-chip.oracle { background: #E8F0FF; color: var(--brand); }
+.route-chip.friedman { background: #FFF3E0; color: #9C5C00; }
+.route-chip.exception { background: var(--red-bg); color: var(--red); }
+
+/* S4 — Exception Detail */
+.exception-header {
+  background: var(--white); border-radius: 10px;
+  border: 1px solid #E4E8EF; padding: 20px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  margin-bottom: 20px;
+}
+.exception-detail-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+.detail-field { }
+.detail-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--grey500); margin-bottom: 4px; }
+.detail-value { font-family: 'DM Mono', monospace; font-size: 14px; color: var(--black); }
+.detail-value.mismatch { color: var(--red); font-weight: 600; }
+
+.resolution-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 20px; }
+.res-card {
+  background: var(--white); border-radius: 10px;
+  border: 1px solid #E4E8EF; padding: 18px;
+  border-top: 4px solid var(--grey300);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.res-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+.res-card.recommended { border-top-color: var(--green); }
+.res-card.caution { border-top-color: var(--amber); }
+.res-card.reject { border-top-color: var(--red); }
+.res-card .res-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.res-card .res-desc { font-size: 12px; color: var(--grey700); line-height: 1.6; margin-bottom: 14px; }
+
+.confirm-panel {
+  background: var(--green-bg); border-radius: 8px; border: 1px solid #A8D8BE;
+  padding: 16px 20px; display: none; animation: fadeIn 0.3s ease;
+}
+.confirm-panel.show { display: block; }
+
+/* ── SCREEN COUNTER BADGE ───────────────────── */
+.screen-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--grey500); margin-bottom: 20px;
+}
+.screen-badge span {
+  background: var(--brand); color: white;
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+}
+
+/* ── PAGE HEADER ROW ────────────────────────── */
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px; gap: 20px;
+}
+.page-header-left {}
+.page-header-right { display: flex; gap: 10px; align-items: center; }
+
+/* ── PERIOD TABS ─────────────────────────────── */
+.period-tabs { display: flex; gap: 4px; }
+.period-tab {
+  font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 6px;
+  cursor: pointer; border: 1px solid var(--grey300); color: var(--grey500);
+  background: white; transition: all 0.18s;
+}
+.period-tab.active { background: var(--brand); color: white; border-color: var(--brand); }
+.period-tab:hover:not(.active) { border-color: var(--brand); color: var(--brand); }
+
+/* ── RESOLVED STATE ────────────────────────── */
+.resolved-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--green); font-size: 12px; font-weight: 700;
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo-wrap">
+    <img src="https://s201.q4cdn.com/943623151/files/images/mb-logo.png"
+         onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';"
+         alt="MasterBrand">
+    <span id="logo-fallback" class="logo-fallback" style="display:none">MasterBrand</span>
+  </div>
+  <div class="divider"></div>
+  <div class="screen-title" id="nav-title">Finance Intelligence Platform</div>
+  <div class="nav-right">
+    <span class="nav-user">J. Toula · Corporate Controller</span>
+    <span class="nav-time" id="live-time">09:14 · Tue 11 Mar</span>
+    <span class="nav-badge">POC Session</span>
+  </div>
+</nav>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- ALERT BANNER -->
+<div id="alert-banner">
+  <div class="pulse-dot"></div>
+  <span class="alert-badge" id="alert-badge-text">AP ALERT</span>
+  <span class="alert-text" id="alert-text">23 invoices in exception queue — Amerock Hardware · $312,000 blocked · Manual review required</span>
+  <button class="alert-btn" onclick="navigateTo('s3')">Resolve →</button>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="nav-icon active" data-screen="s0" onclick="navigateTo('s0')" title="Problem Statement">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span class="icon-label">Brief</span>
+  </div>
+  <div class="nav-icon" data-screen="s1" onclick="navigateTo('s1')" title="Finance Dashboard">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span class="icon-label">Overview</span>
+  </div>
+  <div class="nav-icon" data-screen="s2" onclick="navigateTo('s2')" title="AR Intelligence">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span class="icon-label">AR</span>
+  </div>
+  <div class="nav-icon" data-screen="s3" onclick="navigateTo('s3')" title="AP Invoice Hub">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <span class="icon-label">AP Hub</span>
+    <div class="nav-alert-dot" id="ap-alert-dot"></div>
+  </div>
+  <div class="nav-icon" data-screen="s4" onclick="navigateTo('s4')" title="Exception Resolution">
+    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span class="icon-label">Resolve</span>
+  </div>
+  <div class="powered">Powered<br>by Conquer AI</div>
+</aside>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- ─── SCREEN 0: Problem Statement ─────────── -->
+  <div class="screen active" id="s0">
+    <div class="screen-badge"><span>Screen 0 of 4</span> Problem Statement</div>
+
+    <div class="s0-hero">
+      <div class="overline">What We Heard</div>
+      <h1>Two problems.<br>One platform.</h1>
+      <p>In our discovery session, MasterBrand's Finance Shared Services team described two interconnected challenges that are consuming team capacity and blocking AI progress. Both are solvable. This platform addresses them together.</p>
+    </div>
+
+    <div class="s0-cards">
+      <div class="s0-card">
+        <div class="card-icon">📊</div>
+        <h3>AR is a Reporting Dead End</h3>
+        <p>The AR dashboard pulls from Snowflake, but it's static. Every time a VP asks "why did our top 10 past-due customers change vs. last quarter?" — someone spends 45 minutes manually compiling data from multiple ClickSense dashboards, downloading to Excel, and building a one-off answer. There's no trend intelligence, no proactive alerting, and no way to just ask the data a question.</p>
+        <div class="card-stat">~45 min</div>
+        <div class="card-stat-label">to answer a single AR question today</div>
+      </div>
+      <div class="s0-card">
+        <div class="card-icon">🔄</div>
+        <h3>AP Double Entry — Every Invoice, Every Day</h3>
+        <p>The Invoice Hub (Power Apps) was supposed to automate invoice processing. OCR training failed when vendors changed their templates. Today the AP team manually enters invoice data twice: once into Power Apps, once into Oracle. Exceptions live in email threads across three separate data sources — ClickSense holds, ClickSense processed/unprocessed, and the hub itself.</p>
+        <div class="card-stat">3 systems</div>
+        <div class="card-stat-label">manually reconciled for every exception</div>
+      </div>
+    </div>
+
+    <div class="s0-case">
+      <div class="case-label">The scenario we'll follow today</div>
+      <p><strong>Tuesday morning, MasterBrand Shared Services.</strong> Hendrick's Building Supply — a top-10 customer — has moved $847,000 into the 90-day past-due bucket. Patrick needs to know why it changed vs. Q1 last year, but the ClickSense dashboard can't tell him. Meanwhile, 23 invoices from Amerock Hardware are sitting in the AP exception queue blocking $312,000 in payments. The GRN in Oracle doesn't match the invoice quantity. The team is managing it on email. We'll follow this through every screen.</p>
+    </div>
+
+    <div class="s0-cta">
+      <button class="btn btn-primary btn-lg" onclick="startPOC(this)">
+        <span class="btn-label">See the Platform →</span>
+        <div class="spinner"></div>
+      </button>
+      <div class="cta-sub">4 screens &nbsp;·&nbsp; 2 use cases &nbsp;·&nbsp; 1 case thread</div>
+    </div>
+  </div>
+
+  <!-- ─── SCREEN 1: Finance Dashboard ──────────── -->
+  <div class="screen" id="s1">
+    <div class="screen-badge"><span>Screen 1 of 4</span> Finance Operations Overview</div>
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-title">Finance Operations Dashboard</div>
+        <div class="page-sub">Tuesday 11 Mar 2026 &nbsp;·&nbsp; Shared Services Finance &nbsp;·&nbsp; Last sync: Oracle 1 min ago · Snowflake 3 min ago</div>
+      </div>
+      <div class="page-header-right">
+        <div class="period-tabs">
+          <div class="period-tab active" onclick="setPeriod(this,'Q1 2026')">Q1 2026</div>
+          <div class="period-tab" onclick="setPeriod(this,'Q4 2025')">Q4 2025</div>
+          <div class="period-tab" onclick="setPeriod(this,'YTD')">YTD</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-row cols-4">
+      <div class="kpi-card red">
+        <div class="kpi-label">Total AR Outstanding</div>
+        <div class="kpi-value">$4.2M</div>
+        <div class="kpi-delta up-bad">↑ $380K vs Q1 2025</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">90+ Day Past Due</div>
+        <div class="kpi-value">$1.1M</div>
+        <div class="kpi-delta up-bad">↑ 23% — 3 accounts moved in</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">AP Invoices in Exception</div>
+        <div class="kpi-value">23</div>
+        <div class="kpi-delta amber">$312K blocked · 5 vendors</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Invoices Processed (MTD)</div>
+        <div class="kpi-value">1,847</div>
+        <div class="kpi-delta down-good">↑ 142 vs last month</div>
+      </div>
+    </div>
+
+    <div class="panel-row split-6-4">
+      <div class="panel">
+        <div class="section-label">AR — Top 10 Past Due <span>LIVE</span></div>
+        <table>
+          <thead><tr>
+            <th>Customer</th><th>Outstanding</th><th>90+ Day</th><th>Change MoM</th><th>Status</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr class="highlight pulsing">
+              <td><strong>Hendrick's Building Supply</strong></td>
+              <td class="mono">$847K</td>
+              <td class="mono critical">$847K</td>
+              <td class="mono" style="color:var(--red)">↑ +$320K</td>
+              <td><span class="badge red">90+ DAYS</span></td>
+              <td><button class="btn btn-primary" style="font-size:11px;padding:5px 10px" onclick="navigateTo('s2')">Analyse →</button></td>
+            </tr>
+            <tr>
+              <td>Summit Cabinet Distributors</td>
+              <td class="mono">$412K</td>
+              <td class="mono">$180K</td>
+              <td class="mono" style="color:var(--amber)">↑ +$45K</td>
+              <td><span class="badge amber">60-90 DAYS</span></td>
+              <td><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">View</button></td>
+            </tr>
+            <tr>
+              <td>Apex Home Furnishings</td>
+              <td class="mono">$338K</td>
+              <td class="mono">$0</td>
+              <td class="mono" style="color:var(--green)">↓ –$22K</td>
+              <td><span class="badge green">CURRENT</span></td>
+              <td><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">View</button></td>
+            </tr>
+            <tr>
+              <td>Lakeside Kitchen Design</td>
+              <td class="mono">$290K</td>
+              <td class="mono">$85K</td>
+              <td class="mono" style="color:var(--amber)">↑ +$85K</td>
+              <td><span class="badge amber">60-90 DAYS</span></td>
+              <td><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">View</button></td>
+            </tr>
+            <tr>
+              <td>Prairie Home Centers</td>
+              <td class="mono">$224K</td>
+              <td class="mono">$0</td>
+              <td class="mono">–</td>
+              <td><span class="badge green">CURRENT</span></td>
+              <td><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="ai-callout">
+          <div class="ai-label">AI Analysis</div>
+          <p>3 customers moved into the 90-day bucket this quarter — Hendrick's (+$320K), Lakeside (+$85K), and Riverstone (+$62K). Hendrick's represents the highest concentration risk. Historical pattern: they consistently slow payment in Q1 due to seasonal inventory cycles. Recommend immediate collections review and credit limit assessment.</p>
+          <div class="ai-actions">
+            <button class="btn btn-green" style="font-size:12px;padding:6px 14px" onclick="acceptAI(this,'AR analysis accepted — flagged to collections team')">
+              <span class="btn-label">Accept</span><div class="spinner"></div>
+            </button>
+            <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px">Override</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-label">Data Sources</div>
+        <div class="source-row">
+          <div class="source-item">
+            <div class="source-dot green"></div>
+            <div>
+              <div class="source-name">Snowflake (AR)</div>
+              <div style="font-size:11px;color:var(--grey500)">Customer balances · Ageing · DSO</div>
+            </div>
+            <span class="source-time">3 min ago</span>
+          </div>
+          <div class="source-item">
+            <div class="source-dot green"></div>
+            <div>
+              <div class="source-name">Oracle AP</div>
+              <div style="font-size:11px;color:var(--grey500)">Invoice status · PO matching · Payment</div>
+            </div>
+            <span class="source-time">1 min ago</span>
+          </div>
+          <div class="source-item">
+            <div class="source-dot amber"></div>
+            <div>
+              <div class="source-name">ClickSense (Invoice Holds)</div>
+              <div style="font-size:11px;color:var(--grey500)">Delayed — partial data</div>
+            </div>
+            <span class="source-time">14 min ago</span>
+          </div>
+          <div class="source-item">
+            <div class="source-dot red"></div>
+            <div>
+              <div class="source-name">Friedman ERP</div>
+              <div style="font-size:11px;color:var(--grey500)">Non-Oracle vendor invoices</div>
+            </div>
+            <span class="source-time">Manual only</span>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:10px;background:var(--grey100);border-radius:6px;font-size:11px;color:var(--grey500);font-style:italic;">
+          All sources API-connected in production. No manual extraction required.
+        </div>
+
+        <div class="section-label" style="margin-top:20px;">AP — Exception Summary</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:var(--red-bg);border-radius:8px;padding:14px;text-align:center;">
+            <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--red)">23</div>
+            <div style="font-size:11px;color:var(--grey700);margin-top:4px;">Invoices in exception</div>
+          </div>
+          <div style="background:var(--amber-bg);border-radius:8px;padding:14px;text-align:center;">
+            <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--amber)">$312K</div>
+            <div style="font-size:11px;color:var(--grey700);margin-top:4px;">Payment blocked</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="navigateTo('s3')">
+          <span class="btn-label">Open AP Invoice Hub →</span><div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SCREEN 2: AR Intelligence ───────────── -->
+  <div class="screen" id="s2">
+    <div class="screen-badge"><span>Screen 2 of 4</span> AR Intelligence Dashboard</div>
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-title">AR Intelligence</div>
+        <div class="page-sub">Natural language analytics · Ageing monitor · Q1 2026 &nbsp;·&nbsp; Source: Snowflake</div>
+      </div>
+      <div class="page-header-right">
+        <div class="period-tabs">
+          <div class="period-tab active" onclick="setPeriod(this,'Q1 26')">Q1 '26</div>
+          <div class="period-tab" onclick="setPeriod(this,'Q4 25')">Q4 '25</div>
+          <div class="period-tab" onclick="setPeriod(this,'Q1 25')">Q1 '25</div>
+        </div>
+        <button class="btn btn-ghost" style="font-size:12px;">Export</button>
+      </div>
+    </div>
+
+    <div class="section-label">Ask a Question About Your AR Data</div>
+    <div class="query-box">
+      <span class="query-icon">🔍</span>
+      <input type="text" id="ar-query" placeholder="e.g. Why did the top 10 past-due customers change vs Q1 2025?" />
+      <button class="btn btn-primary" onclick="runQuery(this)">
+        <span class="btn-label">Ask</span><div class="spinner"></div>
+      </button>
+    </div>
+    <div class="query-suggestions">
+      <div class="query-chip" onclick="setQuery('Why did top 10 past-due customers change vs Q1 2025?')">Why did top 10 past-due customers change vs Q1 2025?</div>
+      <div class="query-chip" onclick="setQuery('Show DSO by customer class and channel')">Show DSO by customer class and channel</div>
+      <div class="query-chip" onclick="setQuery('Which customers are at risk of moving to 90+ days?')">Which accounts are at risk of 90+ days?</div>
+      <div class="query-chip" onclick="setQuery('Compare Q1 2026 vs Q1 2025 aging buckets')">Compare Q1 2026 vs Q1 2025 aging</div>
+    </div>
+    <div class="query-result" id="query-result">
+      <h4>AI ANALYSIS RESULT</h4>
+      <p style="font-size:13px;color:var(--grey700);margin-bottom:12px;" id="query-result-text"></p>
+      <table>
+        <thead><tr><th>Customer</th><th>Q1 2025 Balance</th><th>Q1 2026 Balance</th><th>Change</th><th>Driver</th></tr></thead>
+        <tbody>
+          <tr><td>Hendrick's Building Supply</td><td class="mono">$527K</td><td class="mono">$847K</td><td class="mono" style="color:var(--red)">+$320K</td><td>Seasonal slow-pay + credit limit increase</td></tr>
+          <tr><td>Lakeside Kitchen Design</td><td class="mono">$205K</td><td class="mono">$290K</td><td class="mono" style="color:var(--amber)">+$85K</td><td>New regional expansion, invoice disputes</td></tr>
+          <tr><td>Summit Cabinet Distributors</td><td class="mono">$412K</td><td class="mono">$412K</td><td class="mono">flat</td><td>Consistent — no change driver</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel-row split-6-4" style="margin-top:20px;">
+      <div class="panel">
+        <div class="section-label">Ageing Bucket Distribution — Q1 2026 vs Q1 2025</div>
+        <div class="chart-wrap">
+          <div class="bar-chart" id="aging-chart">
+            <div class="bar-group">
+              <div class="bars">
+                <div class="bar brand" style="width:28px;height:40px" data-tip="Current Q1'26: $1.8M"></div>
+                <div class="bar" style="width:28px;height:55px;background:#8FA8C8" data-tip="Current Q1'25: $2.1M"></div>
+              </div>
+              <div class="bar-label">Current</div>
+            </div>
+            <div class="bar-group">
+              <div class="bars">
+                <div class="bar brand" style="width:28px;height:72px" data-tip="1-30 day Q1'26: $580K"></div>
+                <div class="bar" style="width:28px;height:60px;background:#8FA8C8" data-tip="1-30 day Q1'25: $520K"></div>
+              </div>
+              <div class="bar-label">1-30 Day</div>
+            </div>
+            <div class="bar-group">
+              <div class="bars">
+                <div class="bar amber" style="width:28px;height:88px" data-tip="31-60 day Q1'26: $720K"></div>
+                <div class="bar" style="width:28px;height:65px;background:#8FA8C8" data-tip="31-60 day Q1'25: $580K"></div>
+              </div>
+              <div class="bar-label">31-60 Day</div>
+            </div>
+            <div class="bar-group">
+              <div class="bars">
+                <div class="bar amber" style="width:28px;height:80px" data-tip="61-90 day Q1'26: $510K"></div>
+                <div class="bar" style="width:28px;height:50px;background:#8FA8C8" data-tip="61-90 day Q1'25: $320K"></div>
+              </div>
+              <div class="bar-label">61-90 Day</div>
+            </div>
+            <div class="bar-group">
+              <div class="bars">
+                <div class="bar" style="width:28px;height:130px;background:var(--red)" data-tip="90+ day Q1'26: $1.1M — ↑ 23%"></div>
+                <div class="bar" style="width:28px;height:80px;background:#8FA8C8" data-tip="90+ day Q1'25: $780K"></div>
+              </div>
+              <div class="bar-label">90+ Day</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--grey500)">
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:var(--brand);display:inline-block;border-radius:2px"></span>Q1 2026</span>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:#8FA8C8;display:inline-block;border-radius:2px"></span>Q1 2025</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-label">Proactive Ageing Alerts</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:var(--red-bg);border-radius:8px;padding:12px;border-left:3px solid var(--red)">
+            <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">⚠ Moved to 90+ Day This Week</div>
+            <div style="font-size:13px;font-weight:600">Hendrick's Building Supply</div>
+            <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--red)">$847,000</div>
+            <div style="font-size:11px;color:var(--grey500);margin-top:4px">NHS route classification — priority review</div>
+          </div>
+          <div style="background:var(--amber-bg);border-radius:8px;padding:12px;border-left:3px solid var(--amber)">
+            <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">⚑ At Risk of 90+ Day</div>
+            <div style="font-size:13px;font-weight:600">Lakeside Kitchen Design</div>
+            <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--amber)">$290,000</div>
+            <div style="font-size:11px;color:var(--grey500);margin-top:4px">In 61-90 bucket — 12 days until escalation</div>
+          </div>
+          <div style="background:var(--amber-bg);border-radius:8px;padding:12px;border-left:3px solid var(--amber)">
+            <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">⚑ At Risk of 90+ Day</div>
+            <div style="font-size:13px;font-weight:600">Riverstone Depot</div>
+            <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--amber)">$155,000</div>
+            <div style="font-size:11px;color:var(--grey500);margin-top:4px">In 61-90 bucket — 8 days until escalation</div>
+          </div>
+        </div>
+        <div class="ai-callout">
+          <div class="ai-label">AI Analysis</div>
+          <p>90+ day bucket grew 23% QoQ. Pattern analysis shows Hendrick's Q1 slow-pay is recurring — triggered 3 of the last 4 Q1 periods. Recommend automatic collections alert trigger at 75 days for this account class.</p>
+          <div class="ai-actions">
+            <button class="btn btn-green" style="font-size:12px;padding:6px 14px" onclick="acceptAI(this,'Alert rule set — Hendrick\'s flagged at 75 days automatically from next cycle')">
+              <span class="btn-label">Set Alert Rule</span><div class="spinner"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">DSO by Channel — Q1 2026</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;">
+        <div class="aging-hdr">Channel</div>
+        <div class="aging-hdr">DSO (days)</div>
+        <div class="aging-hdr">vs Q1 2025</div>
+        <div class="aging-hdr">Status</div>
+        <div class="aging-row">
+          <div class="aging-cell">Independent Dealers</div>
+          <div class="aging-cell"><span class="mono">52</span></div>
+          <div class="aging-cell" style="color:var(--red)">↑ +8 days</div>
+          <div class="aging-cell"><span class="badge amber">WATCH</span></div>
+        </div>
+        <div class="aging-row">
+          <div class="aging-cell">National Retailers</div>
+          <div class="aging-cell"><span class="mono">38</span></div>
+          <div class="aging-cell" style="color:var(--green)">↓ –2 days</div>
+          <div class="aging-cell"><span class="badge green">ON TARGET</span></div>
+        </div>
+        <div class="aging-row">
+          <div class="aging-cell">Regional Builders</div>
+          <div class="aging-cell"><span class="mono">61</span></div>
+          <div class="aging-cell" style="color:var(--red)">↑ +14 days</div>
+          <div class="aging-cell"><span class="badge red">CRITICAL</span></div>
+        </div>
+        <div class="aging-row">
+          <div class="aging-cell">Home Centres</div>
+          <div class="aging-cell"><span class="mono">41</span></div>
+          <div class="aging-cell" style="color:var(--amber)">↑ +3 days</div>
+          <div class="aging-cell"><span class="badge green">ON TARGET</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SCREEN 3: AP Invoice Hub ─────────────── -->
+  <div class="screen" id="s3">
+    <div class="screen-badge"><span>Screen 3 of 4</span> AP Invoice Hub</div>
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-title">AP Invoice Hub</div>
+        <div class="page-sub">All incoming invoices · AI extraction · Intelligent routing · Oracle integration</div>
+      </div>
+      <div class="page-header-right">
+        <button class="btn btn-ghost" style="font-size:12px">Filter</button>
+        <button class="btn btn-primary" style="font-size:12px" onclick="simulateIngest(this)">
+          <span class="btn-label">+ Simulate New Invoice</span><div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="invoice-pipeline">
+      <div class="pipeline-step">
+        <div class="step-icon">📧</div>
+        <div class="step-label">Email Inbox</div>
+        <div class="step-count brand" id="pipe-inbox">47</div>
+        <div style="font-size:11px;color:var(--grey500);margin-top:2px">Received today</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">🤖</div>
+        <div class="step-label">AI Extracted</div>
+        <div class="step-count green" id="pipe-extracted">43</div>
+        <div style="font-size:11px;color:var(--grey500);margin-top:2px">Auto-processed</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">🔀</div>
+        <div class="step-label">Routed to Oracle</div>
+        <div class="step-count brand" id="pipe-oracle">20</div>
+        <div style="font-size:11px;color:var(--grey500);margin-top:2px">3-way match</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">⚠️</div>
+        <div class="step-label">Exceptions</div>
+        <div class="step-count red" id="pipe-exceptions">23</div>
+        <div style="font-size:11px;color:var(--grey500);margin-top:2px">Need review</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">✅</div>
+        <div class="step-label">Paid (MTD)</div>
+        <div class="step-count green">1,824</div>
+        <div style="font-size:11px;color:var(--grey500);margin-top:2px">Zero exceptions</div>
+      </div>
+    </div>
+
+    <div class="kpi-row cols-3">
+      <div class="kpi-card red">
+        <div class="kpi-label">Exceptions Queue</div>
+        <div class="kpi-value" id="exc-kpi">23</div>
+        <div class="kpi-delta up-bad">$312K blocked — Amerock: 14 invoices</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Avg. Resolution Time</div>
+        <div class="kpi-value">3.4 days</div>
+        <div class="kpi-delta amber">Target: 1 day · Email-based process</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">AI Extraction Accuracy</div>
+        <div class="kpi-value">96.8%</div>
+        <div class="kpi-delta down-good">↑ 0.4% this week</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Invoice Queue <span id="queue-count">23 EXCEPTIONS</span></div>
+      <table id="invoice-table">
+        <thead><tr>
+          <th></th><th>Invoice #</th><th>Vendor</th><th>Amount</th><th>Received</th><th>Issue</th><th>Route</th><th>Action</th>
+        </tr></thead>
+        <tbody>
+          <tr class="highlight pulsing" id="inv-row-amerock">
+            <td><button class="btn btn-ghost" style="font-size:11px;padding:3px 8px;min-width:unset" onclick="toggleRow('amerock-detail','inv-row-amerock',this)">▼</button></td>
+            <td class="mono">INV-78342</td>
+            <td><strong>Amerock Hardware</strong></td>
+            <td class="mono critical">$48,200</td>
+            <td class="mono">Today 07:23</td>
+            <td><span class="badge red">QTY MISMATCH</span></td>
+            <td><span class="badge brand">ORACLE</span></td>
+            <td><button class="btn btn-primary" style="font-size:11px;padding:5px 10px" onclick="navigateTo('s4')">Resolve →</button></td>
+          </tr>
+          <tr class="invoice-row-expand" id="amerock-detail">
+            <td colspan="8" class="expand-cell">
+              <div class="expand-content">
+                <div style="font-size:11px;font-weight:700;color:var(--ai-blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">● AI EXTRACTION RESULT</div>
+                <div class="extract-grid">
+                  <div class="extract-field"><div class="extract-label">Vendor</div><div class="extract-value">Amerock Hardware Co.</div></div>
+                  <div class="extract-field"><div class="extract-label">PO Number</div><div class="extract-value">PO-2026-4471</div></div>
+                  <div class="extract-field"><div class="extract-label">Invoice Total</div><div class="extract-value">$48,200.00</div></div>
+                  <div class="extract-field"><div class="extract-label">Invoice Date</div><div class="extract-value">08 Mar 2026</div></div>
+                  <div class="extract-field"><div class="extract-label">Line Items</div><div class="extract-value">3 lines</div></div>
+                  <div class="extract-field"><div class="extract-label">GRN Match</div><div class="extract-value" style="color:var(--red)">FAIL — Qty diff</div></div>
+                  <div class="extract-field"><div class="extract-label">Routed To</div><div class="extract-value">Oracle AP</div></div>
+                  <div class="extract-field"><div class="extract-label">Issue</div><div class="extract-value" style="color:var(--red)">Line 2: 500 vs 450 units</div></div>
+                </div>
+                <div class="route-chips">
+                  <span style="font-size:11px;color:var(--grey500)">Routing decision:</span>
+                  <span class="route-chip oracle">→ Oracle (PO-2026-4471 matched)</span>
+                  <span class="route-chip exception">Exception: quantity variance on line 2</span>
+                </div>
+                <div style="display:flex;gap:10px;">
+                  <button class="btn btn-primary" onclick="navigateTo('s4')"><span class="btn-label">Open Full Exception →</span><div class="spinner"></div></button>
+                  <button class="btn btn-ghost"><span class="btn-label">Contact Vendor</span><div class="spinner"></div></button>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><button class="btn btn-ghost" style="font-size:11px;padding:3px 8px;min-width:unset" onclick="toggleRow('knape-detail','',this)">▼</button></td>
+            <td class="mono">INV-78298</td>
+            <td>Knape &amp; Vogt Mfg.</td>
+            <td class="mono">$12,750</td>
+            <td class="mono">Yesterday</td>
+            <td><span class="badge amber">PRICE DIFF</span></td>
+            <td><span class="badge brand">ORACLE</span></td>
+            <td><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">Review</button></td>
+          </tr>
+          <tr class="invoice-row-expand" id="knape-detail">
+            <td colspan="8" class="expand-cell">
+              <div class="expand-content">
+                <div style="font-size:11px;font-weight:700;color:var(--ai-blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">● AI EXTRACTION RESULT</div>
+                <div class="extract-grid">
+                  <div class="extract-field"><div class="extract-label">Vendor</div><div class="extract-value">Knape & Vogt Mfg.</div></div>
+                  <div class="extract-field"><div class="extract-label">PO Number</div><div class="extract-value">PO-2026-4389</div></div>
+                  <div class="extract-field"><div class="extract-label">Invoice Total</div><div class="extract-value">$12,750.00</div></div>
+                  <div class="extract-field"><div class="extract-label">Issue</div><div class="extract-value" style="color:var(--amber)">Price: $8.50 vs $7.90/unit</div></div>
+                </div>
+                <div class="route-chips"><span class="route-chip oracle">→ Oracle</span><span class="route-chip exception">Price variance: 7.6%</span></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><button class="btn btn-ghost" style="font-size:11px;padding:3px 8px;min-width:unset" onclick="toggleRow('rev-detail','',this)">▼</button></td>
+            <td class="mono">INV-78156</td>
+            <td>Rev-A-Shelf LLC</td>
+            <td class="mono">$6,400</td>
+            <td class="mono">2 days ago</td>
+            <td><span class="badge amber">NO PO</span></td>
+            <td><span class="badge grey">QUEUE</span></td>
+            <td><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">Review</button></td>
+          </tr>
+          <tr class="invoice-row-expand" id="rev-detail">
+            <td colspan="8" class="expand-cell">
+              <div class="expand-content">
+                <div style="font-size:11px;font-weight:700;color:var(--ai-blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">● AI EXTRACTION RESULT</div>
+                <div class="extract-grid">
+                  <div class="extract-field"><div class="extract-label">Vendor</div><div class="extract-value">Rev-A-Shelf LLC</div></div>
+                  <div class="extract-field"><div class="extract-label">PO Number</div><div class="extract-value" style="color:var(--amber)">Not found</div></div>
+                  <div class="extract-field"><div class="extract-label">Invoice Total</div><div class="extract-value">$6,400.00</div></div>
+                  <div class="extract-field"><div class="extract-label">Routing</div><div class="extract-value">Non-PO queue</div></div>
+                </div>
+                <div class="route-chips"><span class="route-chip exception">No PO — manual approval required</span></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td class="mono">INV-77991</td>
+            <td>Sugatsune America</td>
+            <td class="mono">$3,180</td>
+            <td class="mono">3 days ago</td>
+            <td><span class="badge amber">GRN PENDING</span></td>
+            <td><span class="badge brand">ORACLE</span></td>
+            <td><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">View</button></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td class="mono">INV-77844</td>
+            <td>Blum Inc.</td>
+            <td class="mono">$22,600</td>
+            <td class="mono">3 days ago</td>
+            <td><span class="badge green">MATCHED</span></td>
+            <td><span class="badge brand">ORACLE</span></td>
+            <td><span class="resolved-tag" id="blum-resolved">✓ Queued for payment</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ai-callout">
+        <div class="ai-label">AI Analysis</div>
+        <p>23 of today's exceptions are from 5 vendors. Amerock Hardware accounts for 14 (61%) — all quantity mismatches on PO-2026-4471 series. Pattern: Amerock's invoices have a systematic +10% quantity variance vs. GRN data. This suggests a contract terms misalignment rather than individual errors. Recommend vendor contact before processing any Amerock invoice.</p>
+        <div class="ai-actions">
+          <button class="btn btn-green" style="font-size:12px;padding:6px 14px" onclick="acceptAI(this,'Analysis accepted — Amerock flagged for vendor review. AP team notified.')">
+            <span class="btn-label">Accept</span><div class="spinner"></div>
+          </button>
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px">Override</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SCREEN 4: Exception Resolution ───────── -->
+  <div class="screen" id="s4">
+    <div class="screen-badge"><span>Screen 4 of 4</span> Exception Resolution — Amerock Hardware</div>
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-title">Exception Resolution</div>
+        <div class="page-sub">INV-78342 · Amerock Hardware · $48,200 · Received Today 07:23</div>
+      </div>
+      <div class="page-header-right">
+        <span class="badge red">EXCEPTION ACTIVE</span>
+      </div>
+    </div>
+
+    <div class="exception-header">
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--grey500);margin-bottom:12px">Invoice Details</div>
+        <div class="exception-detail-grid">
+          <div class="detail-field"><div class="detail-label">Vendor</div><div class="detail-value">Amerock Hardware Co.</div></div>
+          <div class="detail-field"><div class="detail-label">Invoice #</div><div class="detail-value">INV-78342</div></div>
+          <div class="detail-field"><div class="detail-label">Invoice Date</div><div class="detail-value">08 Mar 2026</div></div>
+          <div class="detail-field"><div class="detail-label">PO Reference</div><div class="detail-value">PO-2026-4471</div></div>
+          <div class="detail-field"><div class="detail-label">Invoice Total</div><div class="detail-value">$48,200.00</div></div>
+          <div class="detail-field"><div class="detail-label">Routed To</div><div class="detail-value">Oracle AP</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--grey500);margin-bottom:12px">Mismatch Detail — Line 2</div>
+        <table>
+          <thead><tr><th>Field</th><th>Invoice Says</th><th>GRN (Oracle)</th><th>Variance</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Product</td><td>Cabinet Hinge Blk.</td><td>Cabinet Hinge Blk.</td>
+              <td><span class="badge green">MATCH</span></td>
+            </tr>
+            <tr>
+              <td>Quantity</td><td class="mono critical">500 units</td><td class="mono">450 units</td>
+              <td><span class="badge red">+50 UNITS</span></td>
+            </tr>
+            <tr>
+              <td>Unit Price</td><td class="mono">$52.40</td><td class="mono">$52.40</td>
+              <td><span class="badge green">MATCH</span></td>
+            </tr>
+            <tr>
+              <td>Line Total</td>
+              <td class="mono critical">$26,200</td>
+              <td class="mono">$23,580</td>
+              <td><span class="badge red">+$2,620</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom:16px">Resolution Options</div>
+    <div class="resolution-options">
+      <div class="res-card recommended">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <span style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.06em">Option A</span>
+          <span class="badge green">RECOMMENDED</span>
+        </div>
+        <div class="res-title">Request Credit Note</div>
+        <div class="res-desc">Contact Amerock to issue a credit note for the 50-unit overage ($2,620). Process the invoice at the GRN quantity (450 units) and await credit note before final payment. Preserves vendor relationship.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--green);margin-bottom:12px">$45,580 <span style="font-size:12px;font-weight:400">net payable</span></div>
+        <button class="btn btn-green" style="width:100%" id="resolve-btn" onclick="resolveException(this)">
+          <span class="btn-label">Confirm Option A</span><div class="spinner"></div>
+        </button>
+      </div>
+      <div class="res-card caution">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <span style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.06em">Option B</span>
+          <span class="badge amber">CAUTION</span>
+        </div>
+        <div class="res-title">Approve in Full</div>
+        <div class="res-desc">Accept the invoice as submitted ($48,200). Assumes goods were delivered and GRN was incorrect. Requires controller sign-off. Creates audit discrepancy.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--amber);margin-bottom:12px">$48,200 <span style="font-size:12px;font-weight:400">full invoice</span></div>
+        <button class="btn btn-ghost" style="width:100%;border-color:var(--amber);color:var(--amber)" onclick="showModal('Override requires controller approval for invoices over $10,000. Confirm?')">
+          <span class="btn-label">Select Option B</span><div class="spinner"></div>
+        </button>
+      </div>
+      <div class="res-card reject">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <span style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.06em">Option C</span>
+          <span class="badge red">NOT RECOMMENDED</span>
+        </div>
+        <div class="res-title">Reject Invoice</div>
+        <div class="res-desc">Return invoice to Amerock. Requires resubmission. Delays payment by 10–14 days. Impacts vendor relationship score. Not recommended given ongoing relationship.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--red);margin-bottom:12px">$0 <span style="font-size:12px;font-weight:400">deferred</span></div>
+        <button class="btn btn-danger" style="width:100%" onclick="showModal('Reject this invoice and return to Amerock? This will delay payment 10-14 days.')">
+          <span class="btn-label">Reject Invoice</span><div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="confirm-panel" id="confirm-panel">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:20px">✅</span>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--green)">Exception Resolved</div>
+          <div style="font-size:12px;color:var(--grey700)">INV-78342 · Option A confirmed · Credit note requested · Oracle updated · Logged by J. Toula · 09:14</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <span style="font-size:12px;color:var(--grey500)">Oracle status: <strong style="color:var(--green)">UPDATED AUTOMATICALLY</strong></span>
+        <span style="font-size:12px;color:var(--grey500)">·</span>
+        <span style="font-size:12px;color:var(--grey500)">Vendor notified via email</span>
+        <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;margin-left:auto">View Audit Trail</button>
+      </div>
+    </div>
+
+    <div class="ai-callout" style="margin-top:16px">
+      <div class="ai-label">AI Pattern Analysis</div>
+      <p>This is the 14th quantity mismatch from Amerock this quarter. All 14 follow the same pattern: invoice quantity exceeds GRN by exactly 10–11%. This is not a data entry error — it is a systematic contract interpretation difference. Recommend escalating to procurement for contract clause review before processing any further Amerock invoices.</p>
+      <div class="ai-actions">
+        <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="acceptAI(this,'Escalated to procurement — Amerock contract review created. Reference: AP-ESC-0311')">
+          <span class="btn-label">Escalate to Procurement</span><div class="spinner"></div>
+        </button>
+        <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <a class="footer-link" onclick="showToast('info','Audit trail viewer coming in Stage 2')">View audit trail</a>
+  <span class="footer-sources">Oracle AP &nbsp;·&nbsp; Snowflake &nbsp;·&nbsp; ClickSense &nbsp;·&nbsp; Friedman ERP</span>
+  <span class="footer-powered">Powered by Conquer AI</span>
+</footer>
+
+<!-- KEYBOARD HINT -->
+<div id="keyboard-hint">
+  <span class="key">←</span>
+  <span class="key">→</span>
+  <span style="font-size:10px">navigate</span>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Confirm Action</div>
+    <div class="modal-body" id="modal-body">Are you sure?</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()"><span class="btn-label">Cancel</span></button>
+      <button class="btn btn-danger" onclick="closeModal();showToast('warning','Action cancelled — returned to queue')"><span class="btn-label">Confirm</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<script>
+// ── STATE ────────────────────────────────────────
+const screenOrder = ['s0','s1','s2','s3','s4'];
+let currentScreen = 's0';
+let alertState = 'none'; // none | active | recovering | resolved
+let exceptionResolved = false;
+let timerInterval = null;
+
+// ── LIVE CLOCK ───────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('live-time').textContent =
+    `${h}:${m} · ${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
+}
+updateClock();
+setInterval(updateClock, 10000);
+
+// ── NAVIGATION ───────────────────────────────────
+function navigateTo(screenId, delay) {
+  if(screenId === currentScreen) return;
+  const dur = delay || (screenId === 's0' ? 600 : 400);
+  showProgress(dur);
+  setTimeout(() => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+    currentScreen = screenId;
+    const titles = {
+      s0:'Problem Statement',
+      s1:'Finance Operations Dashboard',
+      s2:'AR Intelligence',
+      s3:'AP Invoice Hub',
+      s4:'Exception Resolution — INV-78342'
+    };
+    document.getElementById('nav-title').textContent = titles[screenId] || 'Finance Intelligence';
+  }, dur);
+}
+
+function showProgress(dur) {
+  const bar = document.getElementById('progress-bar');
+  bar.style.transition = 'none'; bar.style.width = '0%'; bar.style.opacity = '1';
+  setTimeout(() => {
+    bar.style.transition = `width ${dur}ms cubic-bezier(0.4,0,0.2,1)`;
+    bar.style.width = '100%';
+  }, 20);
+  setTimeout(() => { bar.style.opacity = '0'; setTimeout(() => { bar.style.width='0%'; }, 250); }, dur + 100);
+}
+
+// ── START POC (Screen 0 CTA) ─────────────────────
+function startPOC(btn) {
+  setLoading(btn, true);
+  setTimeout(() => {
+    setLoading(btn, false);
+    navigateTo('s1', 0);
+    setTimeout(() => showAlertBanner(), 800);
+  }, 1200);
+}
+
+// ── ALERT BANNER ─────────────────────────────────
+function showAlertBanner() {
+  const banner = document.getElementById('alert-banner');
+  banner.classList.add('show');
+  document.getElementById('main').classList.add('with-banner');
+  alertState = 'active';
+}
+
+// ── PERIOD TABS ──────────────────────────────────
+function setPeriod(el, label) {
+  el.closest('.period-tabs').querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  showToast('info', `Loading ${label} data...`);
+}
+
+// ── AR QUERY ─────────────────────────────────────
+function setQuery(q) {
+  document.getElementById('ar-query').value = q;
+}
+function runQuery(btn) {
+  const q = document.getElementById('ar-query').value;
+  if(!q.trim()) { showToast('warning','Please enter a question'); return; }
+  setLoading(btn, true);
+  setTimeout(() => {
+    setLoading(btn, false);
+    const result = document.getElementById('query-result');
+    const text = document.getElementById('query-result-text');
+    const answers = {
+      'why': 'Q1 2026 shows a 23% increase in the 90+ day bucket vs Q1 2025. Three accounts drove the change: Hendrick\'s Building Supply (+$320K), Lakeside Kitchen Design (+$85K), and Riverstone Depot (+$62K). Hendrick\'s accounts for 84% of the movement.',
+      'dso': 'DSO by channel: Regional Builders 61 days (↑14 vs Q1\'25), Independent Dealers 52 days (↑8), Home Centres 41 days (↑3), National Retailers 38 days (↓2). Regional Builders represent the highest risk segment.',
+      'risk': '2 accounts approaching 90+ day threshold: Lakeside Kitchen Design ($290K, 12 days remaining) and Riverstone Depot ($155K, 8 days remaining). Combined exposure: $445K.',
+      'compare': '90+ day bucket: Q1 2025 $780K → Q1 2026 $1.1M (+41%). Main driver: Regional Builders segment grew from 38% to 54% of total past-due balance.',
+    };
+    const key = Object.keys(answers).find(k => q.toLowerCase().includes(k)) || 'why';
+    text.textContent = answers[key];
+    result.classList.add('show');
+    showToast('success', 'Analysis complete');
+  }, 1400);
+}
+
+// ── ACCEPT AI ────────────────────────────────────
+function acceptAI(btn, msg) {
+  setLoading(btn, true);
+  setTimeout(() => {
+    setLoading(btn, false);
+    btn.closest('.ai-actions').innerHTML = `<span style="color:var(--green);font-size:12px;font-weight:700">✓ Accepted by J. Toula · ${getCurrentTime()}</span>`;
+    showToast('success', msg);
+  }, 1000);
+}
+
+// ── TOGGLE ROW ───────────────────────────────────
+function toggleRow(rowId, highlightRow, btn) {
+  const row = document.getElementById(rowId);
+  if(!row) return;
+  const isOpen = row.classList.contains('open');
+  document.querySelectorAll('.invoice-row-expand.open').forEach(r => r.classList.remove('open'));
+  document.querySelectorAll('button').forEach(b => { if(b.textContent.trim()==='▲') b.textContent='▼'; });
+  if(!isOpen) { row.classList.add('open'); btn.textContent='▲'; }
+  else btn.textContent = '▼';
+}
+
+// ── SIMULATE INGEST ───────────────────────────────
+function simulateIngest(btn) {
+  setLoading(btn, true);
+  setTimeout(() => {
+    setLoading(btn, false);
+    document.getElementById('pipe-inbox').textContent = '48';
+    document.getElementById('pipe-extracted').textContent = '44';
+    showToast('success', '✓ New invoice received — Blum Inc. INV-79001 · $8,450 · AI extracting...');
+    setTimeout(() => showToast('info', '✓ INV-79001 extracted and routed to Oracle — 3-way match in progress'), 2500);
+  }, 1800);
+}
+
+// ── RESOLVE EXCEPTION ────────────────────────────
+function resolveException(btn) {
+  setLoading(btn, true);
+  setTimeout(() => {
+    btn.textContent = '✓ Resolved'; btn.style.background = 'var(--green)';
+    btn.disabled = true;
+    // Update states
+    document.getElementById('confirm-panel').classList.add('show');
+    document.getElementById('exc-kpi').textContent = '22';
+    document.getElementById('pipe-exceptions').textContent = '22';
+    document.getElementById('queue-count').textContent = '22 EXCEPTIONS';
+    document.getElementById('ap-alert-dot').style.opacity = '0.3';
+    // Update alert banner
+    const banner = document.getElementById('alert-banner');
+    banner.classList.remove('active'); banner.classList.add('recovering');
+    document.getElementById('alert-badge-text').textContent = 'AP RECOVERING';
+    document.getElementById('alert-text').textContent = 'INV-78342 resolved · 22 exceptions remaining · Amerock credit note requested';
+    exceptionResolved = true;
+    showToast('success', '✓ INV-78342 resolved · Oracle updated · Credit note requested from Amerock · Logged by J. Toula');
+    setTimeout(() => showToast('info', 'Amerock pattern escalated to procurement — reference AP-ESC-0311'), 3000);
+  }, 2000);
+}
+
+// ── MODAL ────────────────────────────────────────
+function showModal(msg) {
+  document.getElementById('modal-body').textContent = msg;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+
+// ── TOAST ────────────────────────────────────────
+function showToast(type, msg) {
+  const icons = { success:'✓', warning:'⚠', info:'ℹ', error:'✕' };
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${icons[type]||'ℹ'}</span><span class="toast-body">${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+  container.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 5000);
+}
+
+// ── HELPERS ──────────────────────────────────────
+function setLoading(btn, state) {
+  if(state) { btn.classList.add('loading'); btn.disabled = true; }
+  else { btn.classList.remove('loading'); btn.disabled = false; }
+}
+function getCurrentTime() {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── KEYBOARD NAV ─────────────────────────────────
+document.addEventListener('keydown', e => {
+  if(e.target.tagName === 'INPUT') return;
+  const idx = screenOrder.indexOf(currentScreen);
+  if(e.key === 'ArrowRight' && idx < screenOrder.length-1) navigateTo(screenOrder[idx+1]);
+  if(e.key === 'ArrowLeft' && idx > 0) navigateTo(screenOrder[idx-1]);
+  if(e.key === 'Escape') closeModal();
+});
+
+// ── INITIAL TOAST ────────────────────────────────
+setTimeout(() => showToast('info', 'POC Session — MasterBrand Finance Intelligence · Mock data only'), 1000);
+</script>
+</body>
+</html>
